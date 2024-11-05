@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
                               'https://plus.unsplash.com/premium_photo-1661963188432-5de8a11f21a7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                               'អង្គរវត្ត'),
                           _imageCard(
-                              'https://www.walletcambodia.com/wp-content/uploads/THE-BEST-Things-to-Do-in-Battambang-Province-1.jpg',
+                              'https://s9.kh1.co/68/68ef5df81c7e491aa166e5ba16e9581cea0499b7.jpg',
                               'ក្រុងបាត់ដំបង'),
                           _imageCard(
                               'http://www.neverendingvoyage.com/wp-content/uploads/2014/03/durian-statue-kampot-cambodia-933x700.jpg',
