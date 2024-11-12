@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.white,
             title: Center(
-              child: Text('ដំណើរ',
+              child: Text('E-Furniture',
                   style: GoogleFonts.suwannaphum(
                       fontSize: 30, fontWeight: FontWeight.w600)),
             ),
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ធ្វើដំណើរទៅកាន់គ្រប់ទីកន្លែងក្នុងព្រះរាជាណាចក្រកម្ពុជា!',
+                  'Browse your dream items',
                   style: GoogleFonts.suwannaphum(
                       fontSize: 15, color: Colors.black),
                 ),
@@ -37,33 +37,33 @@ class MyApp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CustomIconButton(
-                      label: 'Hotel',
-                      icon: Icons.hotel,
+                      label: "Deals",
+                      icon: Icons.discount,
                       backgroundColor: Colors.cyan.shade300,
                       onPressed: () {},
                     ),
                     CustomIconButton(
-                      label: 'រថភ្លើង',
-                      icon: Icons.train,
+                      label: 'Indoor',
+                      icon: Icons.living,
                       backgroundColor: Colors.deepPurpleAccent.shade100,
                       onPressed: () {},
                     ),
                     CustomIconButton(
-                      label: 'ឡានក្រុង',
-                      icon: Icons.directions_bus_filled_outlined,
+                      label: 'Outdoor',
+                      icon: Icons.outdoor_grill,
                       backgroundColor: Colors.pinkAccent.shade100,
                       onPressed: () {},
                     ),
                     CustomIconButton(
-                      label: 'យន្តហោះ',
-                      icon: Icons.flight_takeoff,
+                      label: 'Kitchen',
+                      icon: Icons.kitchen,
                       backgroundColor: Colors.greenAccent.shade100,
                       onPressed: () {},
                     ),
                   ],
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-                Text('ទីតាំងស្នាក់នៅ',
+                Text('Featured',
                     style: GoogleFonts.suwannaphum(
                         fontSize: 20, fontWeight: FontWeight.w600)),
                 Padding(
@@ -75,19 +75,19 @@ class MyApp extends StatelessWidget {
                         Row(
                           children: [
                             CustomElevatedButton(
-                                text: 'ទាំងអស់',
+                                text: 'All',
                                 backgroundColor: Colors.white10,
                                 onPressed: () {}),
                             CustomElevatedButton(
-                                text: 'សៀមរាប',
+                                text: 'Bed',
                                 backgroundColor: Colors.white70,
                                 onPressed: () {}),
                             CustomElevatedButton(
-                                text: 'ភ្នំពេញ',
+                                text: 'Sofa',
                                 backgroundColor: Colors.white70,
                                 onPressed: () {}),
                             CustomElevatedButton(
-                                text: 'បាត់ដំបង',
+                                text: 'Kitchen',
                                 backgroundColor: Colors.white70,
                                 onPressed: () {}),
                           ],
@@ -103,20 +103,20 @@ class MyApp extends StatelessWidget {
                       child: Row(
                         children: [
                           _imageCard(
-                              'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                              'Sabay Hotel'),
+                              'https://assets.wfcdn.com/im/22026551/resize-h800-w800%5Ecompr-r85/2823/282395311/Hegg+Tufted+Upholstered+Platform+Bed%2C+Light+Gray%2C+Queen.jpg',
+                              'Hegg Tufted Upholstered Platform Bed'),
                           _imageCard(
-                              'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                              'KH Resort'),
+                              'https://assets.wfcdn.com/im/38032778/resize-h800-w800%5Ecompr-r85/2909/290930839/Bentura+83.86%27%27+Recessed+Arm+Modular+Sofa.jpg',
+                              'Recessed Arm Modular Sofa'),
                           _imageCard(
-                              'https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                              'SR Boutique'),
+                              'https://assets.wfcdn.com/im/07412727/resize-h800-w800%5Ecompr-r85/2856/285697148/EAST+OAK+Electric+Smoker+Wood+Burning+Portable+725+Square+Inches+Smoker.jpg',
+                              'EAST OAK Electric Smoker'),
                         ],
                       ),
                     )),
                 const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10)),
-                Text('ទីតាំងរមនីយដ្ឋាន',
+                Text('New Stocks',
                     style: GoogleFonts.suwannaphum(
                         fontSize: 20, fontWeight: FontWeight.w600)),
                 Padding(
@@ -126,14 +126,14 @@ class MyApp extends StatelessWidget {
                       child: Row(
                         children: [
                           _imageCard(
-                              'https://plus.unsplash.com/premium_photo-1661963188432-5de8a11f21a7?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                              'អង្គរវត្ត'),
+                              'https://assets.wfcdn.com/im/63982135/resize-h800-w800%5Ecompr-r85/1506/150639570/235.2%27+LED+300+-+Bulb+Icicle+Lights+String+Light.jpg',
+                              'Bulb Icicle Lights String'),
                           _imageCard(
-                              'https://s9.kh1.co/68/68ef5df81c7e491aa166e5ba16e9581cea0499b7.jpg',
-                              'ក្រុងបាត់ដំបង'),
+                              'https://assets.wfcdn.com/im/51262379/resize-h800-w800%5Ecompr-r85/2791/279131096/Aluminum+Patio+Gazebo%2C+12+Ft.+W+x+10+Ft.+D.jpg',
+                              'Aluminum Patio Gazebo'),
                           _imageCard(
-                              'http://www.neverendingvoyage.com/wp-content/uploads/2014/03/durian-statue-kampot-cambodia-933x700.jpg',
-                              'ខេត្តកំពត'),
+                              'https://assets.wfcdn.com/im/80328720/resize-h800-w800%5Ecompr-r85/2825/282590106/Garson+End+Table+Set.jpg',
+                              'Drawer End Table with Storage'),
                         ],
                       ),
                     )),
