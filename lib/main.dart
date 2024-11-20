@@ -14,7 +14,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+      theme: ThemeData(
+        fontFamily: 'suwannaphum', // Replace with your desired font family
+      ),
+
+      home: Home(),
       routes: {
           '/homepage':(context) => const Home(),
       },
