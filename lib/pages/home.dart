@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:midterm/pages/list.dart';
 import 'package:midterm/pages/profile.dart';
-import 'package:midterm/pages/search.dart';
 
 void main() {
   runApp(const Home());
@@ -48,7 +48,15 @@ class _HomeState extends State<Home> {
                       label: "Deals",
                       icon: Icons.discount,
                       backgroundColor: Colors.cyan.shade300,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProductListingScreen(),
+                          ),
+                        );
+
+                      },
                     ),
                     CustomIconButton(
                       label: 'Indoor',
@@ -172,7 +180,7 @@ class _HomeState extends State<Home> {
                     // Navigate to SearchPage if search icon is tapped
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SearchPage()),
+                      MaterialPageRoute(builder: (context) => const ProductListingScreen()),
                     );
                   } else if (index == 3) {
                     // Navigate to ProfilePage if profile icon is tapped
@@ -203,8 +211,8 @@ class _HomeState extends State<Home> {
 
                   ),
                   BottomNavigationBarItem(
-                    icon: Icon(Icons.sticky_note_2, color: Colors.grey),
-                    activeIcon: Icon(Icons.sticky_note_2, color: Colors.cyan),
+                    icon: Icon(Icons.shopping_cart, color: Colors.grey),
+                    activeIcon: Icon(Icons.shopping_cart, color: Colors.cyan),
                     label: '',
                   ),
                   BottomNavigationBarItem(

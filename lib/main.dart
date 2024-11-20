@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:midterm/pages/home.dart';
+import 'package:midterm/pages/detail.dart';
+import 'package:midterm/pages/list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const Home(),
+        home: Home(),
       routes: {
           '/homepage':(context) => const Home(),
       },
