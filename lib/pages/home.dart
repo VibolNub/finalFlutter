@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:midterm/pages/admin.dart';
+import 'package:midterm/pages/cateAdmin.dart';
+import 'package:midterm/pages/cateList.dart';
 import 'dart:convert';
 
 import 'package:midterm/pages/list.dart';
-import 'package:midterm/pages/profile.dart';
+import 'package:midterm/pages/cateAdmin.dart';
 
 void main() {
   runApp(const Home());
@@ -44,7 +46,7 @@ class _HomeState extends State<Home> {
 
   // Fetch Products from the API
   Future<void> _fetchProducts() async {
-    final response = await http.get(Uri.parse('https://fakestoreapi.com/products'));
+    final response = await http.get(Uri.parse('http://malegend.samrach.pro:8000/categories'));
     if (response.statusCode == 200) {
       setState(() {
         products = List<Map<String, dynamic>>.from(json.decode(response.body));
@@ -81,41 +83,38 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CustomIconButton(
-                    label: "electronics",
-                    icon: Icons.electric_bolt_sharp,
+                    label: "Products",
+                    icon: Icons.shopping_cart,
                     backgroundColor: Colors.cyan.shade300,
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ProductListingScreen(),
+                          builder: (context) =>  ProductListingScreen(),
                         ),
                       );
 
                     },
                   ),
                   CustomIconButton(
-                    label: 'jewelery',
-                    icon: Icons.monetization_on_outlined,
+                    label: 'Category',
+                    icon: Icons.format_list_bulleted_rounded,
                     backgroundColor: Colors.deepPurpleAccent.shade100,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CategoryListingScreen(),
+                        ),
+                      );
+
+                    },
                   ),
-                  CustomIconButton(
-                    label: "men's",
-                    icon: Icons.outdoor_grill,
-                    backgroundColor: Colors.pinkAccent.shade100,
-                    onPressed: () {},
-                  ),
-                  CustomIconButton(
-                    label: "women's",
-                    icon: Icons.kitchen,
-                    backgroundColor: Colors.greenAccent.shade100,
-                    onPressed: () {},
-                  ),
+
                 ],
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-              Text('Featured',
+              Text('Featured Products',
                   style: GoogleFonts.suwannaphum(fontSize: 20, fontWeight: FontWeight.w600)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -126,8 +125,8 @@ class _HomeState extends State<Home> {
                         ? [CircularProgressIndicator()]
                         : products.map((product) {
                       return _imageCard(
-                        product['image'],
-                        product['title'],
+                        product['attachment'],
+                        product['name'],
                       );
                     }).toList(),
                   ),
@@ -135,7 +134,7 @@ class _HomeState extends State<Home> {
               ),
               const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10)),
-              Text('New Stocks',
+              Text('Categories',
                   style: GoogleFonts.suwannaphum(fontSize: 20, fontWeight: FontWeight.w600)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -146,8 +145,8 @@ class _HomeState extends State<Home> {
                         ? [CircularProgressIndicator()]
                         : products.map((product) {
                       return _imageCard(
-                        product['image'],
-                        product['title'],
+                        product['attachment'],
+                        product['name'],
                       );
                     }).toList(),
                   ),
@@ -177,17 +176,23 @@ class _HomeState extends State<Home> {
                 if (index == 1) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ProductListingScreen()),
+                    MaterialPageRoute(builder: (context) =>  ProductListingScreen()),
                   );
                 } else if (index == 2) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ProductManagementScreen()),
+                    MaterialPageRoute(builder: (context) => const CategoryListingScreen()),
                   );
-                } else if (index == 3) {
+                }
+                else if (index == 3) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                    MaterialPageRoute(builder: (context) => const ProductManagementScreen()),
+                  );
+                } else if (index == 4) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CategoryManagementScreen()),
                   );
                 } else {
                   setState(() {
@@ -203,18 +208,23 @@ class _HomeState extends State<Home> {
                   label: '',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.search, color: Colors.grey),
-                  activeIcon: Icon(Icons.search, color: Colors.cyan),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
                   icon: Icon(Icons.shopping_cart, color: Colors.grey),
                   activeIcon: Icon(Icons.shopping_cart, color: Colors.cyan),
                   label: '',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.person, color: Colors.grey),
-                  activeIcon: Icon(Icons.person, color: Colors.cyan),
+                  icon: Icon(Icons.list, color: Colors.grey),
+                  activeIcon: Icon(Icons.list, color: Colors.cyan),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.edit, color: Colors.grey),
+                  activeIcon: Icon(Icons.edit, color: Colors.cyan),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.edit, color: Colors.grey),
+                  activeIcon: Icon(Icons.edit, color: Colors.cyan),
                   label: '',
                 ),
               ]),

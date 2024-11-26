@@ -3,10 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ProductDetail extends StatefulWidget {
-  final int productId;
+  final String productId;
 
-  const ProductDetail({required this.productId, Key? key})
-      : super(key: key);
+  const ProductDetail({required this.productId, Key? key}) : super(key: key);
 
   @override
   _ProductDetailState createState() => _ProductDetailState();
@@ -14,27 +13,47 @@ class ProductDetail extends StatefulWidget {
 
 class _ProductDetailState extends State<ProductDetail> {
   late String productUrl;
+  late String categoryUrl;
   Map<String, dynamic>? product;
+  Map<String, String> categoryMap = {};
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    productUrl = "https://fakestoreapi.com/products/${widget.productId}";
-    fetchProduct();
+    productUrl = "http://malegend.samrach.pro:8000/products/${widget.productId}";
+    categoryUrl = "http://malegend.samrach.pro:8000/categories";
+    fetchProductAndCategories();
   }
 
-  Future<void> fetchProduct() async {
+  Future<void> fetchProductAndCategories() async {
     try {
-      final response = await http.get(Uri.parse(productUrl));
-      if (response.statusCode == 200) {
-        setState(() {
-          product = json.decode(response.body);
-          isLoading = false;
-        });
-      } else {
+      // Fetch product details
+      final productResponse = await http.get(Uri.parse(productUrl));
+      if (productResponse.statusCode != 200) {
         throw Exception('Failed to load product');
       }
+
+      // Fetch categories
+      final categoryResponse = await http.get(Uri.parse(categoryUrl));
+      if (categoryResponse.statusCode != 200) {
+        throw Exception('Failed to load categories');
+      }
+
+      final productData = json.decode(productResponse.body);
+      final categories = json.decode(categoryResponse.body) as List<dynamic>;
+
+      // Map category IDs to names
+      final Map<String, String> tempCategoryMap = {};
+      for (var category in categories) {
+        tempCategoryMap[category['id']] = category['name'];
+      }
+
+      setState(() {
+        product = productData;
+        categoryMap = tempCategoryMap;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -61,16 +80,16 @@ class _ProductDetailState extends State<ProductDetail> {
           children: [
             Center(
               child: Image.network(
-                product!['image'],
+                product!['attachment'] ?? "https://picsum.photos/250",
                 height: 200,
                 fit: BoxFit.cover,
               ),
             ),
             SizedBox(height: 16),
             Text(
-              product!['title'],
+              product!['name'],
               style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.bold),
+                  fontSize: 25, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text(
@@ -79,9 +98,9 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
             SizedBox(height: 8),
             Text(
-              'Category: ${product!['category']}',
-              style:
-              TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              'Category: ${categoryMap[product!['category_id']] ?? 'Unknown'}',
+              style: TextStyle(
+                  fontSize: 16, fontStyle: FontStyle.italic),
             ),
             SizedBox(height: 16),
             Text(
@@ -89,31 +108,24 @@ class _ProductDetailState extends State<ProductDetail> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(Icons.star, color: Colors.yellow),
-                SizedBox(width: 4),
-                Text(
-                  '${product!['rating']['rate']} (${product!['rating']['count']} reviews)',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ],
+            Text(
+                'Created at: ${product!['created_at']}',
+              style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 32),
+            SizedBox(height: 16),
             Center(
               child: Column(
                 children: [
                   ElevatedButton(
-                    onPressed: (){}, // This disables the button and ensures it does nothing when clicked.
+                    onPressed: () {}, // Placeholder for add-to-cart functionality
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.cyan.shade300, // Ensures the color remains consistent when disabled.
+                      backgroundColor: Colors.cyan.shade300,
                     ),
                     child: Text('Add to cart'),
-                  )
-
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

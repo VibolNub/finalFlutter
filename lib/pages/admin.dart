@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:midterm/pages/add.dart';
+import 'package:midterm/pages/edit.dart';
 
 class ProductManagementScreen extends StatefulWidget {
   const ProductManagementScreen({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class ProductManagementScreen extends StatefulWidget {
 }
 
 class _ProductManagementScreenState extends State<ProductManagementScreen> {
-  final String productUrl = "https://fakestoreapi.com/products?limit=20";
+  final String productUrl = "http://malegend.samrach.pro:8000/products";
   List<dynamic>? products;
   bool isLoading = true;
 
@@ -41,20 +42,64 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     }
   }
 
-  void updateProduct(int productId) {
+  void updateProduct(String productId) {
     // Handle update action
     print("Update product with ID: $productId");
+
+    // Navigate to EditProductScreen, passing the productId as an argument
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProductScreen(productId: productId), // Passing the productId to the EditProductScreen
+      ),
+    );
   }
 
-  void deleteProduct(int productId) {
-    // Handle delete action
-    print("Delete product with ID: $productId");
+
+  Future<void> deleteProduct(String productId) async {
+    final String deleteUrl = "http://malegend.samrach.pro:8000/products/$productId";
+
+    try {
+      final response = await http.delete(Uri.parse(deleteUrl));
+
+      if (response.statusCode == 200) {
+        // Product deleted successfully
+        print("Product with ID: $productId deleted successfully.");
+        fetchProducts(); // Refresh the product list after deletion
+      } else {
+        // Handle non-200 response
+        print("Failed to delete product. Status code: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to delete product: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      // Handle errors
+      print("Error deleting product: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred while deleting the product.')),
+      );
+    }
   }
+
 
   void addProduct() {
     // Handle add product action
     print("Add new product");
   }
+
+  Future<void> navigateToCreateProductScreen() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CreateProductScreen()),
+    );
+
+    if (result == true) {
+      // Refresh the page
+      fetchProducts(); // Call the method to refresh your product list
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +129,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
             margin: EdgeInsets.symmetric(vertical: 6.0),
             child: ListTile(
               title: Text(
-                product['title'],
+                product['name'],
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -117,8 +162,8 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                         ),
                         TextButton(
                           onPressed: () {
-                            deleteProduct(product['id']); // Call your delete function
-                            Navigator.of(context).pop(); // Close the dialog after deletion
+                            Navigator.of(context).pop(); // Close the dialog first
+                            deleteProduct(product['id']); // Pass the product ID to the delete function
                           },
                           child: Text("Delete", style: TextStyle(color: Colors.red)),
                         ),
@@ -126,6 +171,7 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
                     );
                   },
                 );
+
               },
             ),
 
@@ -138,15 +184,11 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.cyan.shade600,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateProductScreen()),
-          );
-        },
+        onPressed: navigateToCreateProductScreen, // Use the method for navigation and refresh
         shape: CircleBorder(),
         child: Icon(Icons.add),
       ),
+
     );
   }
 }
