@@ -22,7 +22,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int myIndex = 0;
-  List<String> categories = [];
+  List<Map<String, dynamic>> categories = [];
   List<Map<String, dynamic>> products = [];
 
   @override
@@ -32,21 +32,21 @@ class _HomeState extends State<Home> {
     _fetchProducts();
   }
 
-  // Fetch Categories from the API
   Future<void> _fetchCategories() async {
-    final response = await http.get(Uri.parse('https://fakestoreapi.com/products/categories'));
+    final response = await http.get(Uri.parse('http://malegend.samrach.pro:8000/categories'));
     if (response.statusCode == 200) {
       setState(() {
-        categories = List<String>.from(json.decode(response.body));
+        categories = List<Map<String, dynamic>>.from(json.decode(response.body));
       });
     } else {
       throw Exception('Failed to load categories');
     }
   }
 
+
   // Fetch Products from the API
   Future<void> _fetchProducts() async {
-    final response = await http.get(Uri.parse('http://malegend.samrach.pro:8000/categories'));
+    final response = await http.get(Uri.parse('http://malegend.samrach.pro:8000/products'));
     if (response.statusCode == 200) {
       setState(() {
         products = List<Map<String, dynamic>>.from(json.decode(response.body));
@@ -141,12 +141,12 @@ class _HomeState extends State<Home> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: products.isEmpty
+                    children: categories.isEmpty
                         ? [CircularProgressIndicator()]
-                        : products.map((product) {
+                        : categories.map((category) {
                       return _imageCard(
-                        product['attachment'],
-                        product['name'],
+                        category['attachment'],
+                        category['name'],
                       );
                     }).toList(),
                   ),

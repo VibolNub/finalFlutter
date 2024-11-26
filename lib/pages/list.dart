@@ -215,7 +215,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
                       child: Image.network(
-                        'https://picsum.photos/250',
+                        product['attachment'],
                         width: double.infinity,
                         height: 100,
                         fit: BoxFit.cover,
@@ -260,6 +260,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
                         ),
                       ),
                     ),
+
                   ],
                 ),
               ),
