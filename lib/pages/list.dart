@@ -6,11 +6,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'detail.dart'; // Import your ProductDetail screen.
 
 class ProductListingScreen extends StatefulWidget {
-  const ProductListingScreen({Key? key}) : super(key: key);
+  final String? selectedCategoryId;
+  final String? selectedCategory;
+
+  const ProductListingScreen({Key? key, this.selectedCategoryId, this.selectedCategory}) : super(key: key);
 
   @override
   _ProductListingScreenState createState() => _ProductListingScreenState();
 }
+
 
 class _ProductListingScreenState extends State<ProductListingScreen> {
   final String productUrl = "http://malegend.samrach.pro:8000/products";
@@ -26,12 +30,19 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   @override
   void initState() {
     super.initState();
-    fetchCategories();
-    fetchProducts(); // Initial fetch with no category selected
+
+    // Set the initial category based on the passed parameters
+    selectedCategory = widget.selectedCategory;
+    selectedCategoryId = widget.selectedCategoryId;
+
+    fetchCategories(); // Load categories
+    fetchProducts(selectedCategoryId); // Fetch products for the selected category
     _searchController.addListener(() {
       filterProducts();
     });
   }
+
+
 
   // Fetch categories and map them to category id and name
   Map<String, String> categoryMap = {}; // Maps category name to category id
@@ -59,17 +70,21 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
   // Fetch products based on the selected category
   Future<void> fetchProducts([String? categoryId]) async {
     try {
-      String url = productUrl;
-      if (categoryId != null && categoryId != 'All') {
-        url = "$productUrl/category/$categoryId"; // Fetch products by category_id
-      }
+      print("fetchProducts called with categoryId: $categoryId");
+      String url = (categoryId == null || categoryId.isEmpty)
+          ? productUrl // Fetch all products
+          : "$categoryUrl/$categoryId"; // Fetch products by category
+
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         setState(() {
           products = json.decode(response.body);
-          filteredProducts = products; // Initially show all products
+          filteredProducts = products; // Initially, set filteredProducts to all products
           isLoading = false;
         });
+
+        // After fetching products, filter based on the current search and category
+        filterProducts();
       } else {
         throw Exception('Failed to load products');
       }
@@ -77,7 +92,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
       setState(() {
         isLoading = false;
       });
-      print(e);
+      print("Error fetching products: $e");
     }
   }
 
@@ -86,8 +101,7 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       filteredProducts = products?.where((product) {
-        final matchesSearchQuery =
-            query.isEmpty || product['name'].toLowerCase().contains(query);
+        final matchesSearchQuery = query.isEmpty || product['name'].toLowerCase().contains(query);
         final matchesCategory = selectedCategory == null ||
             selectedCategory == 'All' ||
             product['category_id'] == selectedCategoryId;
@@ -96,178 +110,166 @@ class _ProductListingScreenState extends State<ProductListingScreen> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Product Listing',
-            style: GoogleFonts.suwannaphum(),
-          ),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(100),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search products...',
-                      hintStyle: GoogleFonts.suwannaphum(),
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Product Listing', style: GoogleFonts.suwannaphum()),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search products...',
+                    hintStyle: GoogleFonts.suwannaphum(),
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
                     ),
-                    style: GoogleFonts.suwannaphum(),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                    ),
-                    value: selectedCategory,
-                    hint: Text(
-                      'Select Category',
-                      style: GoogleFonts.suwannaphum(),
-                    ),
-                    items: categories.map((category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(
-                          category,
-                          style: GoogleFonts.suwannaphum(),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCategory = value;
-                        selectedCategoryId = categoryMap[value]; // Get the category_id
-                        isLoading = true; // Show loading indicator while fetching
-                        fetchProducts(selectedCategoryId); // Fetch products by selected category
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : filteredProducts == null
-            ? Center(
-          child: Text(
-            'Failed to load products',
-            style: GoogleFonts.suwannaphum(),
-          ),
-        )
-            : filteredProducts!.isEmpty
-            ? Center(
-          child: Text(
-            'No products found',
-            style: GoogleFonts.suwannaphum(),
-          ),
-        )
-            : GridView.builder(
-          padding: const EdgeInsets.all(8.0),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
-            childAspectRatio: 0.9, // Adjust for a more compact layout
-          ),
-          itemCount: filteredProducts!.length,
-          itemBuilder: (context, index) {
-            final product = filteredProducts![index];
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductDetail(
-                      productId: product['id'],
-                    ),
-                  ),
-                );
-              },
-              child: Card(
-                elevation: 5.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
-                      child: Image.network(
-                        product['attachment'],
-                        width: double.infinity,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: Text(
-                        product['name'],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.suwannaphum(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Text(
-                        '\$${product['price']}',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.suwannaphum(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.green,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: Text(
-                        product['category_id'],
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.suwannaphum(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                  ],
+                  style: GoogleFonts.suwannaphum(),
                 ),
               ),
-            );
-          },
-        ));
-  }
-}
-
-
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  value: selectedCategory, // Bind to the state variable
+                  hint: Text(
+                    'Select Category',
+                    style: GoogleFonts.suwannaphum(),
+                  ),
+                  items: categories.map((category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(
+                        category,
+                        style: GoogleFonts.suwannaphum(),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCategory = value;
+                      selectedCategoryId = value == 'All' || value == null
+                          ? ''
+                          : categoryMap[value] ?? '';
+                      isLoading = true;
+                      fetchProducts(selectedCategoryId);
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : (filteredProducts == null || filteredProducts!.isEmpty)
+          ? Center(
+        child: Text(
+          filteredProducts == null
+              ? 'Failed to load products'
+              : 'No products found',
+          style: GoogleFonts.suwannaphum(),
+        ),
+      )
+          : GridView.builder(
+        padding: const EdgeInsets.all(8.0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 8.0,
+          childAspectRatio: 0.9,
+        ),
+        itemCount: filteredProducts!.length,
+        itemBuilder: (context, index) {
+          final product = filteredProducts![index];
+          return product == null
+              ? SizedBox.shrink() // Handle null gracefully
+              : GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductDetail(
+                    productId: product['id'],
+                  ),
+                ),
+              );
+            },
+            child: Card(
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(12.0)),
+                    child: Image.network(
+                      product['attachment'] ?? 'https://via.placeholder.com/150',
+                      width: double.infinity,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Icon(Icons.error),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 4.0),
+                    child: Text(
+                      product['name'] ?? 'Unknown Product',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.suwannaphum(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: Text(
+                      product['price'] != null
+                          ? '\$${product['price']}'
+                          : 'No Price',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.suwannaphum(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }}

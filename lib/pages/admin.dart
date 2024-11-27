@@ -42,17 +42,20 @@ class _ProductManagementScreenState extends State<ProductManagementScreen> {
     }
   }
 
-  void updateProduct(String productId) {
+  void updateProduct(String productId) async {
     // Handle update action
     print("Update product with ID: $productId");
 
     // Navigate to EditProductScreen, passing the productId as an argument
-    Navigator.push(
+    final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => EditProductScreen(productId: productId), // Passing the productId to the EditProductScreen
-      ),
+      MaterialPageRoute(builder: (context) => EditProductScreen(productId: productId)),
     );
+
+    if (result == true) {
+      // Refresh the product list after returning from the Edit screen
+      fetchProducts();
+    }
   }
 
 

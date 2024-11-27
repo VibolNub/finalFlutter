@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:midterm/pages/list.dart';
 
 class CategoryListingScreen extends StatefulWidget {
   const CategoryListingScreen({Key? key}) : super(key: key);
@@ -61,9 +62,16 @@ class _CategoryListingScreenState extends State<CategoryListingScreen> {
       )
           : categories!.isEmpty
           ? Center(
-        child: Text(
-          'No categories found',
-          style: GoogleFonts.suwannaphum(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.category_outlined, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'No categories found',
+              style: GoogleFonts.suwannaphum(fontSize: 16, color: Colors.grey),
+            ),
+          ],
         ),
       )
           : GridView.builder(
@@ -77,41 +85,59 @@ class _CategoryListingScreenState extends State<CategoryListingScreen> {
         itemCount: categories!.length,
         itemBuilder: (context, index) {
           final category = categories![index];
-          return Card(
-            elevation: 5.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(12.0)),
-                    child: Image.network(
-                      category['attachment'] ?? '',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductListingScreen(
+                    selectedCategoryId: category['id'],
+                    selectedCategory: category['name'], // Pass the name as well
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      category['name'] ?? 'Unnamed',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.suwannaphum(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              );
+
+            },
+
+
+            child: Card(
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(12.0)),
+                      child: Image.network(
+                        category['attachment'] ?? 'https://via.placeholder.com/150',
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                      ),
+
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        category['name'] ?? 'Unnamed',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.suwannaphum(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
+
         },
       ),
     );

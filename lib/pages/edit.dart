@@ -75,11 +75,49 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void updateProduct() {
-    // Handle the update logic
-    print("Updated product with ID: ${widget.productId}");
-    // Implement API call to update product
+  void updateProduct() async {
+    final String updateUrl = "http://malegend.samrach.pro:8000/products/${widget.productId}";
+
+    try {
+      final response = await http.put(
+        Uri.parse(updateUrl),
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'name': name,
+          'description': description,
+          'price': price,
+          'attachment': imageUrl,
+          'category_id': selectedCategoryId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully updated product
+        print("Product updated successfully");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Product updated successfully')),
+        );
+        Navigator.pop(context, true); // Return true to indicate the product was updated
+      } else {
+        // Failed to update product
+        print("Failed to update product: ${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update product: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      print("Error updating product: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred while updating the product')),
+      );
+    }
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -156,6 +194,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
                 child: Text('Accept'),
               ),
+
             ],
           ),
         ),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:midterm/pages/admin.dart';
-import 'package:midterm/pages/cateAdmin.dart';
-import 'package:midterm/pages/cateList.dart';
 import 'dart:convert';
-
 import 'package:midterm/pages/list.dart';
 import 'package:midterm/pages/cateAdmin.dart';
+import 'package:midterm/pages/cateList.dart';
+import 'package:midterm/pages/admin.dart';
 
 void main() {
   runApp(const Home());
@@ -42,7 +40,6 @@ class _HomeState extends State<Home> {
       throw Exception('Failed to load categories');
     }
   }
-
 
   // Fetch Products from the API
   Future<void> _fetchProducts() async {
@@ -90,10 +87,9 @@ class _HomeState extends State<Home> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>  ProductListingScreen(),
+                          builder: (context) => const ProductListingScreen(),
                         ),
                       );
-
                     },
                   ),
                   CustomIconButton(
@@ -107,10 +103,8 @@ class _HomeState extends State<Home> {
                           builder: (context) => const CategoryListingScreen(),
                         ),
                       );
-
                     },
                   ),
-
                 ],
               ),
               const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
@@ -152,8 +146,6 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5)),
             ],
           ),
         ),
@@ -169,65 +161,65 @@ class _HomeState extends State<Home> {
             ],
           ),
           child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              elevation: 0,
-              onTap: (index) {
-                if (index == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  ProductListingScreen()),
-                  );
-                } else if (index == 2) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CategoryListingScreen()),
-                  );
-                }
-                else if (index == 3) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ProductManagementScreen()),
-                  );
-                } else if (index == 4) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CategoryManagementScreen()),
-                  );
-                } else {
-                  setState(() {
-                    myIndex = index;
-                  });
-                }
-              },
-              currentIndex: myIndex,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home, color: Colors.grey),
-                  activeIcon: Icon(Icons.home, color: Colors.cyan),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart, color: Colors.grey),
-                  activeIcon: Icon(Icons.shopping_cart, color: Colors.cyan),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.list, color: Colors.grey),
-                  activeIcon: Icon(Icons.list, color: Colors.cyan),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.edit, color: Colors.grey),
-                  activeIcon: Icon(Icons.edit, color: Colors.cyan),
-                  label: '',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.edit, color: Colors.grey),
-                  activeIcon: Icon(Icons.edit, color: Colors.cyan),
-                  label: '',
-                ),
-              ]),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            onTap: (index) {
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProductListingScreen()),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CategoryListingScreen()),
+                );
+              } else if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductManagementScreen()),
+                );
+              } else if (index == 4) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CategoryManagementScreen()),
+                );
+              } else {
+                setState(() {
+                  myIndex = index;
+                });
+              }
+            },
+            currentIndex: myIndex,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home, color: Colors.grey),
+                activeIcon: Icon(Icons.home, color: Colors.cyan),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart, color: Colors.grey),
+                activeIcon: Icon(Icons.shopping_cart, color: Colors.cyan),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list, color: Colors.grey),
+                activeIcon: Icon(Icons.list, color: Colors.cyan),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.edit, color: Colors.grey),
+                activeIcon: Icon(Icons.edit, color: Colors.cyan),
+                label: '',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.edit, color: Colors.grey),
+                activeIcon: Icon(Icons.edit, color: Colors.cyan),
+                label: '',
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -250,14 +242,14 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          const SizedBox(height: 8), // Space between the image and title
+          const SizedBox(height: 8),
           Text(
             title,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 13, // Adjust font size as needed
-              fontWeight: FontWeight.w500, // Adjust font weight as needed
-              color: Colors.grey, // Adjust color as needed
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
             ),
           ),
         ],
