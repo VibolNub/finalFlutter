@@ -23,20 +23,29 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     fetchCategoryDetails();
   }
 
-  // Fetch existing category details
+  // Fetch category details from the list of categories
   Future<void> fetchCategoryDetails() async {
-    final url = 'http://malegend.samrach.pro:8000/categories/${widget.categoryId}';
+    final url = 'http://malegend.samrach.pro:8000/categories';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        setState(() {
-          name = data['name'];
-          imageUrl = data['attachment'];
-          isLoadingProduct = false;
-        });
+        final List<dynamic> categories = json.decode(response.body);
+        final category = categories.firstWhere(
+              (cat) => cat['id'] == widget.categoryId,
+          orElse: () => null,
+        );
+
+        if (category != null) {
+          setState(() {
+            name = category['name'];
+            imageUrl = category['attachment'];
+            isLoadingProduct = false;
+          });
+        } else {
+          throw Exception('Category not found');
+        }
       } else {
-        throw Exception('Failed to load category');
+        throw Exception('Failed to load categories');
       }
     } catch (e) {
       setState(() => isLoadingProduct = false);
@@ -71,8 +80,6 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +103,8 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
               ),
               TextFormField(
                 initialValue: imageUrl,
-                decoration: InputDecoration(labelText: 'Attachment (Image URL)'),
+                decoration:
+                InputDecoration(labelText: 'Attachment (Image URL)'),
                 onSaved: (value) => imageUrl = value ?? '',
                 validator: (value) =>
                 value!.isEmpty ? 'Please enter an image URL' : null,
@@ -106,7 +114,7 @@ class _EditCategoryScreenState extends State<EditCategoryScreen> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    updateCategory();  // Call updateCategory when form is valid
+                    updateCategory(); // Call updateCategory when form is valid
                   }
                 },
                 child: Text('Accept'),
